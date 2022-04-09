@@ -1,10 +1,17 @@
 import React from "react";
+import {Home, Footer, Navbar} from '././components';
 
 function App() {
   return (
     <div className="App">
-      <h1> Hello World </h1>
-      <h2>Wakanda Token</h2>
+      <div>
+        <Navbar />
+      </div>
+     
+      <div>
+        <Home />
+        <Footer />
+      </div>
     </div>
   );
 }

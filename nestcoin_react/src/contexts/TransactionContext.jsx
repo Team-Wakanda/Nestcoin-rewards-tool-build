@@ -1,10 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-
+import { WakandaTokenAbi, WakandaTokenAddress } from "../utilis/constants";
 const { ethereum } = window;
+
 
 export const TransactionContext = React.createContext();
 
+const createEthereumContract = () =>
+{
+    const provider = new ethers.providers.Web3Provider( ethereum );
+    const signer = provider.getSigner();
+    const transactionsContract = new ethers.Contract( WakandaTokenAddress, WakandaTokenAbi, signer );
+
+    return transactionsContract;
+};
 
 
 export const TransactionProvider = ( { children } ) =>
@@ -56,16 +65,31 @@ export const TransactionProvider = ( { children } ) =>
         }
     };
 
+    const disconnect = async () =>
+    {
+        try
+        {
+            if ( !ethereum ) return alert( "Please install MetaMask." );
+            setCurrentAccount( " " );
+            window.location.reload();
+        } catch ( error )
+        {
+            console.log( error );
+
+            throw new Error( "No ethereum object" );
+        }
+    }
     useEffect( () =>
     {
         checkIfWalletIsConnect();
-        
+        disconnect();
     },);
 
     return (
         <TransactionContext.Provider value={ {
             connectWallet,
             currentAccount,
+
 
         } }>
             { children }
