@@ -11,8 +11,10 @@ contract WakandaToken is ERC20, ERC20Burnable, AccessControl {
     //Hash input using keccak256 hashing
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
+    //Hash input for batch transfer role using keccak256
     bytes32 public constant BATCH_TRANSFER_ROLE = keccak256("BATCH_TRQNFER_ROLE");
 
+    event BatchTransferDelegated (address account);
     //Define constructor with token name and symbol
     constructor() ERC20("Wakanda Token", "WAT") {
         //Grant admin role to the contract deployer
@@ -25,7 +27,7 @@ contract WakandaToken is ERC20, ERC20Burnable, AccessControl {
         _grantRole(BATCH_TRANSFER_ROLE, msg.sender);
 
         //Mint initial amount of tokens and assign them to the contract deployer
-        _mint(msg.sender, 1000 * 10 * decimals());
+        _mint(msg.sender, 1000 * 10 ** decimals());
     }
 
     //Define funciton for monting and make funciton only callable from address with MINTER_ROLE
@@ -33,14 +35,25 @@ contract WakandaToken is ERC20, ERC20Burnable, AccessControl {
         _mint(to, amount);
     }
 
-    function batchTransfer(address[] calldata recipients, uint256[] amounts) public onlyRole (BATCH_TRANSFER_ROLE)  returns (bool){
+    function batchTransfer(address[] calldata recipients, uint256[] calldata amounts) public onlyRole (BATCH_TRANSFER_ROLE)  returns (bool){
+        require(recipients.length == amounts.length, "Number of recipients is not equal to amounts to be transferred");
+        require(recipients.length <= 200, "Number of recipients exceeds maximum allowable");
+                     
+        //Trnasfer tokens to adddresses
         for (uint256 i = 0; i < recipients.length; i++) {
-            require(recipients.length == amounts.length, "Number of recipients is not equal to amounts to be transferred");
             require(recipients[i] != address(0), "Cannot transfer to address 0");
-            require(recipients.length <= 200, "Number of recipients exceeds maximum allowable");
+            require(balanceOf(address(this))  >= amounts[i], "Balance not enough to continue transfer");
             
             transfer(recipients[i], amounts[i] * 10 ** decimals());
         }
+        return true;
+    }
+
+    function delegateBatchTransfer (address account) public onlyRole (DEFAULT_ADMIN_ROLE) returns(bool) {
+        require(account != address(0), "Cannot delegate to address 0");
+        _grantRole(BATCH_TRANSFER_ROLE, account);
+        
+        emit BatchTransferDelegated(account);
         return true;
     }
 }
