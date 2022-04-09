@@ -4,7 +4,7 @@
 
 - On your terminal, clone repository using: git clone `paste-the-remote-url-of-your-own-repo`
 
-- On your terminal, set the parent repo as your upstream using: git remote add upstream https://github.com/Team-Wakanda/Nestcoin-rewards-tool-build
+- On your terminal, set the parent repo as your upstream using: `git remote add upstream` https://github.com/Team-Wakanda/Nestcoin-rewards-tool-build
 
 - Run: git remote -v to ensure your origin and upstream is set
 
