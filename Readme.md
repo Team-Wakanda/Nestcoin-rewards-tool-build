@@ -16,3 +16,4 @@
 
 - You can start working on your task.
 
+frontend UI design figma file https://www.figma.com/file/McwWVnBM1PE9S30LLXnMu1/Nestcoin%2F-wakanda-coin?node-id=2%3A2 by @whydscreaations (Product Designer)
